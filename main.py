@@ -2,6 +2,7 @@ import telebot
 from telebot import types
 from telebot.handler_backends import StatesGroup, State
 import random
+from connection_DB import select_word
 
 
 TOKEN = '7390295624:AAEUlfl4o-cpZNqSEvarnJlK24OUP_ZCIIA'
@@ -17,11 +18,13 @@ class MyStates(StatesGroup):
     translate_word = State()
     another_words = State()
 
+import_func = select_word()
+
 @bot.message_handler(commands=['start'])
 def start_bot(message):
     markup = types.ReplyKeyboardMarkup(row_width=2)
 
-    russian_word = 'Мир'
+    russian_word = import_func
 
     english_word = 'Peace'
     english_word_btn = types.KeyboardButton(english_word)
