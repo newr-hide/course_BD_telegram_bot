@@ -20,12 +20,13 @@ class Russian_word(Base):
     word = alh.Column(alh.String(length=60), unique=True)
 
     def __str__(self):
-        return f'{self.id_russian_word}: {self.word}'
+        return f'{self.word}'
 
-class Bridge_russ_en_word:
+class Bridge_russ_en_word(Base):
+    __tablename__ = "bridge_russ_en_word"
+
     id_english_word = alh.Column(alh.Integer, alh.ForeignKey("english_word"),primary_key=True, nullable=False)
     id_russian_word = alh.Column(alh.Integer, alh.ForeignKey("russian_word"),primary_key=True, nullable=False)
-
 
     def __str__(self):
         return f'{self.id_english_word}: {self.id_russian_word}'

@@ -2,7 +2,7 @@ import telebot
 from telebot import types
 from telebot.handler_backends import StatesGroup, State
 import random
-from connection_DB import select_word
+from connection_DB import select_word, select_translite, select_other_word, insert_word
 
 
 TOKEN = '7390295624:AAEUlfl4o-cpZNqSEvarnJlK24OUP_ZCIIA'
@@ -18,23 +18,27 @@ class MyStates(StatesGroup):
     translate_word = State()
     another_words = State()
 
-import_func = select_word()
-
+import_func_1 = select_word()
+import_func_2 = select_translite(import_func_1)
+import_func_3 = select_other_word(import_func_1)
+import_func_4 = insert_word()
 @bot.message_handler(commands=['start'])
 def start_bot(message):
     markup = types.ReplyKeyboardMarkup(row_width=2)
 
-    russian_word = import_func
+    russian_word = import_func_2
 
-    english_word = 'Peace'
+    english_word = import_func_1
     english_word_btn = types.KeyboardButton(english_word)
-    other_word = ['Car','Hello','Dad']
+    other_word = import_func_3
     other_word_btn = [types.KeyboardButton(word) for word in other_word]
     buttons = [english_word_btn] + other_word_btn
     random.shuffle(buttons)
 
+
     next_btn = types.KeyboardButton(Command.NEXT)
     add_word_btn = types.KeyboardButton(Command.ADD_WORD)
+
     delete_word_btn = types.KeyboardButton(Command.DELETE_WORD)
     buttons.extend([next_btn, add_word_btn, delete_word_btn])
     markup.add(*buttons)
