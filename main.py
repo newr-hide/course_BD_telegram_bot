@@ -3,26 +3,14 @@ from telebot import types
 from telebot.types import Message
 from telebot.handler_backends import StatesGroup, State
 import random
-from connection_DB import  add_word, delete_word,add_trans_word,select_word, select_translite, select_other_word,reg_user_
+from connection_DB import  select_word, select_translite, select_other_word, reg_user_, add_word, add_trans_word, delete_word
 
-TOKEN = ''
+TOKEN = 'Ваш Токен'
 bot = telebot.TeleBot(TOKEN)
 
 userStep = {}
 known_users = []
 buttons = []
-# def show_hint(*lines):
-#     return '\n'.join(lines)
-# def show_target(data):
-#     return f"{data['english_word']} -> {data['russian_word']}"
-# def get_user_step(uid):
-#     if uid in userStep:
-#         return userStep[uid]
-#     else:
-#         known_users.append(uid)
-#         userStep[uid] = 0
-#         print("New user detected, who hasn't used \"/start\" yet")
-#         return 0
 
 class Command:
 
@@ -42,10 +30,10 @@ def start_bot(message):
     user_id = message.from_user.id
     user_name = message.from_user.first_name
     reg_user_(user_id, user_name)
-    bot.send_message(message.chat.id, f"Hello {message.from_user.first_name}")
+    bot.send_message(message.chat.id, f"Hello {message.from_user.first_name} Для помощи введите команду /help")
     markup = types.ReplyKeyboardMarkup(row_width=2)
-    target_word = select_word()
-    russian_word = select_translite(target_word)
+    russian_word = select_word(user_id)
+    target_word = select_translite(russian_word)
     english_word_btn = types.KeyboardButton(target_word)
     other_word = select_other_word(target_word)
     other_word_btn = [types.KeyboardButton(word) for word in other_word]
@@ -90,10 +78,12 @@ def del_word(message:Message):
 
 @bot.message_handler(commands=['help'])
 def help_bot(message):
-    bot.send_message(message.chat.id,"ADD word - Добавляет новое слово в словарь\n"
+    bot.send_message(message.chat.id,"Перед Вами программа для изучения английского языка\n"
+                                     "При нажатии команды /start программа выдаст слово на руском языке и 4 варианта из которых нужно выбрать правильный\n"
+                                "ADD word - Добавляет новое слово в словарь\n"
                                  "DELETE word - удаляет слово из словаря\n"
                                  "NEXT - следующее слово\n"
-                                 "WORDS FOR THE DAY - слова для запоминания на день\n")
+                                 )
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 
